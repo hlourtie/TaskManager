@@ -4,48 +4,63 @@ from datetime import datetime
 from time import *
 import time
 import datetime
-# window = tk.Tk()
-# window.title("TimeMaster")
-# window.mainloop()
-i = 0
-records = []
+
+# number of lines
+class Lines(object):
+	def __init__(self):
+		self.value = 0
+	def increment(self):
+		self.value += 1
+
+
+# Timing the object that contains the data that needs to be saved
 class Timing(object):
-	start = 0
-	elapsed = 0
-	date = ""
-	def __init__(self,name):
-		self.name = name
+	def __init__(self):
+		self.name = ""
+		self.elapsed = 0
+		self.start = 0
 		self.date = datetime.datetime.now()
-	def set_name(name):
-		self.name = name
-	def set_start(_):
-		start = time.time()
-	def set_elapsed(_):
-		if elapsed != 0:
-			elapsed += time.time() - self.start
-		elapsed = time.time() - self.start
-	def save_me(_):
-		f.write("Customer: %s , date %d, total time %d", name, date, elapsed)
+	def set_start(self):
+		self.start = time.time()
+	def set_elapsed(self):
+		if self.elapsed != 0:
+			self.elapsed += (int)(time.time() - self.start)
+		self.elapsed = (int)(time.time() - self.start)
+	def save_me(self, txt):
+		f = open("Time.txt","a")
+		self.name = txt.get()
+		line = "Customer: "+ str(self.name) + " date: " + str(self.date) + "  total time: " + str(self.elapsed)
+		f.write(line)
+		f.write("\n")
+		f.close()
 
-	
-def add_time():
+# changes the grid  position of the add button
+def changed(i):
+	bt.grid(row= i.value + 1, sticky=S)
+
+# adds a line with all the button
+def add_time(i):
+	j = i.value
 	txt = Entry(window, width=10)
-	txt.grid(row = i, column = 0)
-	records.append(Timing(txt.get))
-	beginButton = tk.Button(window, text="Start", command= records[i].set_start)
-	beginButton.grid(row = i, column = 1)
-	stopButton = tk.Button(window, text="Stop", command= records[i].set_elapsed)
-	stopButton.grid(row = i, column = 2)
-	saveButton = tk.Button(window, text="Save", command= records[i].save_me)
-	saveButton.grid(row = i, column = 3)
-	
+	txt.grid(row = j, column = 0)
+	records.append(Timing())
+	beginButton = tk.Button(window, text="Start", command= records[j].set_start)
+	beginButton.grid(row = j, column = 1)
+	stopButton = tk.Button(window, text="Stop", command= records[j].set_elapsed)
+	stopButton.grid(row = j, column = 3)
+	saveButton = tk.Button(window, text="Save", command=lambda: records[j].save_me(txt))
+	saveButton.grid(row = j, column = 5)
+	i.increment()
+	changed(i)
 
-f = open("Time.txt","w+")
+#main part that runs
+i = Lines()
+records = []
 window = tk.Tk()
 window.title("TimeMaster")
-bt = tk.Button(window,text = "Add", command = add_time)
-bt.grid(sticky="s")
-f.close()
+bt = tk.Button(window,text = "Add", command =lambda: add_time(i))
+bt.grid(row= i.value +1, sticky=S)
+
 window.mainloop()
 
 	
