@@ -14,15 +14,9 @@ class Lines(object):
 
 
 # Timing the object that contains the data that needs to be saved
-def displaytime(g,tp, current_elapsed):
+def displaytime(tp, current_elapsed):
 		temps = tp
 		current_elapsed.config(text= temps)
-		if g == 1:
-			temps +=1
-			time.sleep(1000)
-			displaytime(1,temps,current_elapsed)
-		else:
-			return
 
 class Timing(object):
 	def __init__(self):
@@ -32,7 +26,8 @@ class Timing(object):
 		self.dat = date.today()
 	def set_start(self, current_elapsed):
 		self.start = time.time()
-		displaytime(1 , 0, current_elapsed)
+		current =  time.strftime('%H:%M:%S')
+		displaytime(str(current), current_elapsed)
 	def set_elapsed(self,total_elapsed, current_elapsed):
 		if self.elapsed != 0:
 			self.elapsed += (int)(time.time() - self.start)
@@ -42,7 +37,11 @@ class Timing(object):
 	def save_me(self, txt):
 		f = open("Time.txt","a")
 		self.name = txt.get()
-		line = "Customer: "+ str(self.name) + " date: " + str(self.dat) + "  total time: " + str(self.elapsed)
+		time = self.elapsed 
+		hour = (int) (time / 3600)
+		minutes = (int) ((time % 3600) / 60)
+		seconds =  (int) ((time % 3600) % 60)
+		line = "Customer: "+ str(self.name) + " date: " + str(self.dat) + "  total time: " + str(hour) + ":" + str(minutes) + ":" + str(seconds)
 		f.write(line)
 		f.write("\n")
 		f.close()
